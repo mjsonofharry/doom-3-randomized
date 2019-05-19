@@ -115,7 +115,6 @@ object monster_base : ai {
 	void		path_attack();
 
 	void		monster_begin_hijacked();
-	float		new_random( float max );
 };
 
 /***********************************************************************
