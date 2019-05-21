@@ -2281,7 +2281,5 @@ float monster_base::new_random( float max ) {
 	dec *= 0.6;
 	rnd *= 0.1;
 
-	sys.println( ( rel + dec + rnd ) * max );
-
 	return ( rel + dec + rnd ) * max;
 }
