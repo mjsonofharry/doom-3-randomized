@@ -1,10 +1,10 @@
 [
     {
-        "game_title": "Doom 3",
+        "game_title": "dhewm 3",
         "mod_title": "Doom 3 Randomized",
         "is_pk4": true,
         "sources": ["src"],
-        "base_path": "D:\\SteamLibrary\\steamapps\\common\\Doom 3",
+        "base_path": "D:\\dhewm3",
         "game": "base",
         "zip_name": "randomdoom3",
         "pk4_name": "zzzrandoom",
