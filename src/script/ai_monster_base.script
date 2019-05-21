@@ -115,6 +115,7 @@ object monster_base : ai {
 	void		path_attack();
 
 	void		monster_begin_hijacked();
+	float		new_random( float max );
 };
 
 /***********************************************************************
@@ -2094,9 +2095,16 @@ void monster_base::follow_alternate_path3() {
 }
 
 void monster_base::monster_begin_hijacked() {
-	string classname = "";
-	float rnd = sys.random( 19 );
+	while ( !AI_DAMAGE && !AI_ACTIVATED ) {
+		if ( checkForEnemy( true ) ) {
+			break;
+		}
+		waitFrame();
+	}
 
+	string classname = "";
+
+	float rnd = new_random( 19 );
 	if ( rnd < 1 ) {
 		classname = "monster_demon_archvile";
 	} else if ( rnd < 2 ) {
@@ -2125,7 +2133,7 @@ void monster_base::monster_begin_hijacked() {
 		classname = "monster_flying_lostsoul";
 	} else if ( rnd < 14 ) {
 		// regular zombie
-		rnd = sys.random( 16 );
+		rnd = new_random( 16 );
 		if ( rnd < 1 ) {
 			classname = "monster_zombie_jumpsuit";
 		} else if ( rnd < 2 ) {
@@ -2161,10 +2169,10 @@ void monster_base::monster_begin_hijacked() {
 		}
 	} else if ( rnd < 15 ) {
 		// special zombie
-		rnd = sys.random( 3 );
+		rnd = new_random( 3 );
 		if ( rnd < 1 ) {
 			// fat zombie
-			rnd = sys.random( 3 );
+			rnd = new_random( 3 );
 			if ( rnd < 1 ) {
 				classname = "monster_zombie_fat";
 			} else if ( rnd < 2 ) {
@@ -2179,7 +2187,7 @@ void monster_base::monster_begin_hijacked() {
 		}
 	} else if ( rnd < 16 ) {
 		// unique zombie
-		rnd = sys.random( 3 );
+		rnd = new_random( 3 );
 		if ( rnd < 1 ) {
 			classname = "monster_zombie_morgue";
 		} else if ( rnd < 2 ) {
@@ -2189,7 +2197,7 @@ void monster_base::monster_begin_hijacked() {
 		}
 	} else if ( rnd < 17 ) {
 		// zsec
-		rnd = sys.random( 4 );
+		rnd = new_random( 4 );
 		if ( rnd < 4 ) {
 			classname = "monster_zsec_machinegun";
 		} else if ( rnd < 2 ) {
@@ -2201,7 +2209,7 @@ void monster_base::monster_begin_hijacked() {
 		}
 	} else if ( rnd < 18 ) {
 		// commando
-		rnd = sys.random( 2 );
+		rnd = new_random( 2 );
 		if ( rnd < 1 ) {
 			classname = "monster_zombie_commando";
 		} else {
@@ -2209,7 +2217,7 @@ void monster_base::monster_begin_hijacked() {
 		}
 	} else if ( rnd < 19 ) {
 		// boss
-		rnd = sys.random ( 5 );
+		rnd = new_random ( 5 );
 		if ( rnd < 1 ) {
 			classname = "monster_boss_cyberdemon";
 		} else if ( rnd < 2 ) {
@@ -2240,4 +2248,40 @@ void monster_base::monster_begin_hijacked() {
 	monster.setAngles( getAngles() );
 	sys.trigger( monster );
 	kill();
+}
+
+float monster_base::new_random( float max ) {
+	player_base player = $player1;
+	vector dir = getOrigin() - player.getOrigin();
+	float rel = sys.DotProduct( dir, sys.angToRight( player.getViewAngles() ) );
+	if ( rel < 0 ) {
+		rel *= -1;
+	}
+	rel /= 360;
+
+	string strTime = sys.getTime();
+	float len = sys.strLength( strTime );
+	boolean isDecimal = false;
+	string buf = "0.";
+	string ch;
+	float i;
+	for ( i = 0; i < len; i++ ) {
+		ch = sys.strMid( strTime, i, 1);
+		if ( ch == "."  ) {
+			isDecimal = true;
+		} else if ( isDecimal ) {
+			buf = buf + ch;
+		}
+	}
+	float dec = sys.strToFloat( buf );
+
+	float rnd = sys.random( 1 );
+
+	rel *= 0.3;
+	dec *= 0.6;
+	rnd *= 0.1;
+
+	sys.println( ( rel + dec + rnd ) * max );
+
+	return ( rel + dec + rnd ) * max;
 }
