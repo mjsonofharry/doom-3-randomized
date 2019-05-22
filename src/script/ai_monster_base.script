@@ -114,7 +114,7 @@ object monster_base : ai {
 	void 		path_show();
 	void		path_attack();
 
-	void		monster_begin_hijacked();
+	void		monster_randomize();
 	float		new_random( float max );
 };
 
@@ -421,10 +421,7 @@ void monster_base::monster_begin() {
 	float	movetype;
 	entity	enemy;
 
-	string parentName = getKey( "random_parent" );
-	if ( parentName == "" ) {
-		monster_begin_hijacked();
-	}
+	monster_randomize();
 
 	run	= false;
 	ignore_sight = getIntKey( "no_sight" );
@@ -1841,6 +1838,7 @@ monster_base::combat_ainode
 =====================
 */
 void monster_base::combat_ainode( entity node ) {
+	monster_randomize();
 	if ( node.getKey( "classname" ) == "ai_attackcone_turret" ) {
 		combat_turret_node( node );
 	} else {
@@ -2094,7 +2092,12 @@ void monster_base::follow_alternate_path3() {
 	setState( "state_FollowAlternatePath" );
 }
 
-void monster_base::monster_begin_hijacked() {
+void monster_base::monster_randomize() {
+	string parentName = getKey( "random_parent" );
+	if ( parentName != "" ) {
+		return;
+	}
+
 	while ( !AI_DAMAGE && !AI_ACTIVATED ) {
 		if ( checkForEnemy( true ) ) {
 			break;
