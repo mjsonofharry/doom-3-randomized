@@ -2093,11 +2093,13 @@ void monster_base::follow_alternate_path3() {
 }
 
 void monster_base::monster_randomize() {
+	// choose to randomize or not
 	string parentName = getKey( "random_parent" );
 	if ( parentName != "" ) {
 		return;
 	}
 
+	// spinlock until player arrives
 	while ( !AI_DAMAGE && !AI_ACTIVATED ) {
 		if ( checkForEnemy( true ) ) {
 			break;
@@ -2105,8 +2107,8 @@ void monster_base::monster_randomize() {
 		waitFrame();
 	}
 
+	// select a spawn class
 	string classname = "";
-
 	float rnd = new_random( 19 );
 	if ( rnd < 1 ) {
 		classname = "monster_demon_archvile";
@@ -2250,7 +2252,7 @@ void monster_base::monster_randomize() {
 	monster.setOrigin( getOrigin() );
 	monster.setAngles( getAngles() );
 	sys.trigger( monster );
-	kill();
+	remove();
 }
 
 float monster_base::new_random( float max ) {
