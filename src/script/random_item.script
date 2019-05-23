@@ -1,0 +1,139 @@
+object random_item {
+    void	    init();
+};
+
+void random_item::init() {
+    // choose to randomize or not
+	string parentName = getKey( "random_parent" );
+	if ( parentName != "" ) {
+		return;
+    }
+
+    // spinlock until player arrives
+    player_base p1 = $player1;
+    entity ent = $null_entity;
+    vector pos = getOrigin() + '0 0 4';
+    vector target = p1.getOrigin() + '0 0 8';
+	while ( ( ent != p1 ) && ( distanceTo( p1 ) > 100 ) ) {
+        sys.trace( pos, target, '-2 -2 0', '2 2 8', MASK_PLAYERSOLID, self );
+        ent = sys.getTraceEntity();
+		waitFrame();
+    }
+    
+    // random 1
+	vector dir = getOrigin() - p1.getOrigin();
+	float rel = sys.DotProduct( dir, sys.angToRight( p1.getViewAngles() ) );
+	if ( rel < 0 ) {
+		rel *= -1;
+	}
+	rel /= 360;
+
+    // random 2
+	string strTime = sys.getTime();
+	float len = sys.strLength( strTime );
+	boolean isDecimal = false;
+	string buf = "0.";
+	string ch;
+	float i;
+	for ( i = 0; i < len; i++ ) {
+		ch = sys.strMid( strTime, i, 1);
+		if ( ch == "."  ) {
+			isDecimal = true;
+		} else if ( isDecimal ) {
+			buf = buf + ch;
+		}
+	}
+	float dec = sys.strToFloat( buf );
+
+    // random 3
+	float sysrnd = sys.random( 1 );
+
+    // random result
+	rel *= 0.3;
+	dec *= 0.6;
+	sysrnd *= 0.1;
+    float rnd = ( rel + dec + sysrnd ) * 31;
+
+    // select a spawn class
+    string classname = "";
+    sys.println( rnd );
+    if ( rnd < 1 ) {
+        classname = "item_armor_shard";
+    } else if ( rnd < 2 ) {
+        classname = "item_medkit";
+    } else if ( rnd < 3 ) {
+        classname = "item_medkit_small";
+    } else if ( rnd < 4 ) {
+        classname = "item_aircannister";
+    } else if ( rnd < 5 ) {
+        classname = "item_battery";
+    } else if ( rnd < 6 ) {
+        classname = "item_backpack";
+    } else if ( rnd < 7 ) {
+        classname = "ammo_bullets_small";
+    } else if ( rnd < 8 ) {
+        classname = "ammo_bullets_large";
+    } else if ( rnd < 9 ) {
+        classname = "ammo_shells_small";
+    } else if ( rnd < 10 ) {
+        classname = "ammo_shells_large";
+    } else if ( rnd < 11 ) {
+        classname = "ammo_clip_small";
+    } else if ( rnd < 12 ) {
+        classname = "ammo_clip_large";
+    } else if ( rnd < 13 ) {
+        classname = "ammo_grenade_small";
+    } else if ( rnd < 14 ) {
+        classname = "ammo_rockets_small";
+    } else if ( rnd < 15 ) {
+        classname = "ammo_rockets_large";
+    } else if ( rnd < 16 ) {
+        classname = "ammo_cells_small";
+    } else if ( rnd < 17 ) {
+        classname = "ammo_cells_large";
+    } else if ( rnd < 18 ) {
+        classname = "ammo_belt_small";
+    } else if ( rnd < 19 ) {
+        classname = "ammo_bfg_small";
+    } else if ( rnd < 20 ) {
+        classname = "weapon_bfg";
+    } else if ( rnd < 21 ) {
+        classname = "weapon_chaingun";
+    } else if ( rnd < 22 ) {
+        classname = "weapon_chainsaw";
+    } else if ( rnd < 23 ) {
+        classname = "weapon_flashlight";
+    } else if ( rnd < 24 ) {
+        classname = "weapon_handgrenade";
+    } else if ( rnd < 25 ) {
+        classname = "weapon_machinegun";
+    } else if ( rnd < 26 ) {
+        classname = "weapon_pistol";
+    } else if ( rnd < 27 ) {
+        classname = "weapon_plasmagun";
+    } else if ( rnd < 28 ) {
+        classname = "weapon_rocketlauncher";
+    } else if ( rnd < 29 ) {
+        classname = "weapon_shotgun";
+    } else if ( rnd < 30 ) {
+        classname = "weapon_soulcube";
+    } else if ( rnd < 31 ) {
+        classname = "item_armor_security";
+    }
+
+    // select offspring name
+	string offspringNamePrefix = "rndItem" + self.getName();
+	string offspringName = "";
+	for ( i = 0; ( offspringName == "" ) || ( sys.getEntity( offspringName ) != $null_entity ); i++ ) {
+		offspringName = offspringNamePrefix + i;
+		sys.wait( 0.01 );
+	}
+
+    // spawn offspring
+    sys.setSpawnArg( "name", offspringName );
+    sys.setSpawnArg( "random_parent", self.getName() );
+    entity item = sys.spawn( classname );
+    item.setOrigin( getOrigin() );
+    item.setAngles( getAngles() );
+    remove();
+}
