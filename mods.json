@@ -9,5 +9,16 @@
         "zip_name": "randomdoom3",
         "pk4_name": "zzzrandoom",
         "should_deploy": true
+    },
+    {
+        "game_title": "OpenCoop",
+        "mod_title": "Doom 3 Randomized",
+        "is_pk4": true,
+        "sources": ["src", "opencoop_patch"],
+        "base_path": "D:\\SteamLibrary\\steamapps\\common\\Doom 3\\",
+        "game": "opencoop",
+        "zip_name": "randomdoom3_opencoop",
+        "pk4_name": "zzzrandoom_opencoop",
+        "should_deploy": true
     }
 ]
