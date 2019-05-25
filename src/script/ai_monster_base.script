@@ -2099,6 +2099,13 @@ void monster_base::monster_randomize() {
 		return;
 	}
 
+	hide();
+	removeBinds();
+	float randomTime = RandomDelay( 1, 3 );
+	while ( sys.getTime() < randomTime ) {
+		waitFrame();
+	}
+
 	// spinlock until player arrives
 	while ( !AI_DAMAGE && !AI_ACTIVATED ) {
 		if ( checkForEnemy( true ) ) {
@@ -2260,12 +2267,11 @@ void monster_base::monster_randomize() {
 	}
 
 	// spawn offspring
-	removeBinds();
 	string name = getName();
 	string tmpName = "REMOVE_" + name;
 	setName( tmpName );
 	sys.setSpawnArg( "name", name );
-	sys.setSpawnArg( "random_parent", self.getName() );
+	sys.setSpawnArg( "random_parent", tmpName );
 	entity monster = sys.spawn( classname );
 	monster.setOrigin( getOrigin() );
 	monster.setAngles( getAngles() );
