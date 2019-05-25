@@ -2169,7 +2169,7 @@ void monster_base::monster_randomize() {
 			classname = "monster_zombie_maint_flashlight";
 		} else if ( rnd < 15 ) {
 			classname = "monster_zombie_maint";
-		} else if ( rnd < 16 ) {
+		} else {
 			classname = "monster_zombie_maint2";
 		}
 	} else if ( rnd < 15 ) {
@@ -2182,12 +2182,12 @@ void monster_base::monster_randomize() {
 				classname = "monster_zombie_fat";
 			} else if ( rnd < 2 ) {
 				classname = "monster_zombie_fat2";
-			} else if ( rnd < 3 ) {
+			} else {
 				classname = "monster_zombie_fat_wrench";
 			}
 		} else if ( rnd < 2 ) {
 			classname = "monster_zombie_maint_fast";
-		} else if ( rnd < 3 ) {
+		} else {
 			classname = "monster_zombie_bernie";
 		}
 	} else if ( rnd < 16 ) {
@@ -2197,7 +2197,7 @@ void monster_base::monster_randomize() {
 			classname = "monster_zombie_morgue";
 		} else if ( rnd < 2 ) {
 			classname = "monster_zombie_sawyer";
-		} else if ( rnd < 3 ) {
+		} else {
 			classname = "monster_zombie_boney";
 		}
 	} else if ( rnd < 17 ) {
@@ -2209,7 +2209,7 @@ void monster_base::monster_randomize() {
 			classname = "monster_zsec_shotgun";
 		} else if ( rnd < 3 ) {
 			classname = "monster_zsec_pistol";
-		} else if ( rnd < 4 ) {
+		} else {
 			classname = "monster_zsec_shield";
 		}
 	} else if ( rnd < 18 ) {
@@ -2220,7 +2220,7 @@ void monster_base::monster_randomize() {
 		} else {
 			classname = "monster_zombie_commando_cgun";
 		}
-	} else if ( rnd < 19 ) {
+	} else {
 		// boss
 		rnd = new_random ( 5 );
 		if ( rnd < 1 ) {
@@ -2231,7 +2231,7 @@ void monster_base::monster_randomize() {
 			classname = "monster_boss_guardian_seeker";
 		} else if ( rnd < 4 ) {
 			classname = "monster_boss_sabaoth";
-		} else if ( rnd < 5 ) {
+		} else {
 			classname = "monster_boss_vagary";
 		}
 	}
@@ -2262,8 +2262,8 @@ void monster_base::monster_randomize() {
 	// spawn offspring
 	removeBinds();
 	string name = getName();
-	string _name = "_" + name;
-	setName( _name );
+	string tmpName = "REMOVE_" + name;
+	setName( tmpName );
 	sys.setSpawnArg( "name", name );
 	sys.setSpawnArg( "random_parent", self.getName() );
 	entity monster = sys.spawn( classname );
