@@ -13,8 +13,9 @@ void random_item::init() {
     player_base p1 = $player1;
     entity ent = $null_entity;
     vector pos = getOrigin() + '0 0 4';
-    vector target = p1.getOrigin() + '0 0 8';
+    vector target;
 	while ( ( ent != p1 ) && ( distanceTo( p1 ) > 100 ) ) {
+        target = p1.getOrigin() + '0 0 8';
         sys.trace( pos, target, '-2 -2 0', '2 2 8', MASK_PLAYERSOLID, self );
         ent = sys.getTraceEntity();
 		waitFrame();
@@ -56,7 +57,6 @@ void random_item::init() {
 
     // select a spawn class
     string classname = "";
-    sys.println( rnd );
     if ( rnd < 1 ) {
         classname = "item_armor_shard";
     } else if ( rnd < 2 ) {
