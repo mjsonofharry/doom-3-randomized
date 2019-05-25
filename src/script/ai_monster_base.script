@@ -2245,6 +2245,21 @@ void monster_base::monster_randomize() {
 		sys.wait( 0.01 );
 	}
 
+	// get targets
+	entity target = $null_entity;
+	string targetKey;
+	for ( i = 0; i < 20 ); i++ {
+		target = getTarget( i );
+		if ( target == $null_entity ) {
+			break;
+		}
+		targetKey = "target";
+		if ( i > 0 ) {
+			targetKey += i;
+		}
+		sys.setSpawnArg( targetKey, target );
+	}
+
 	// spawn offspring
 	sys.setSpawnArg( "name", offspringName );
 	sys.setSpawnArg( "random_parent", self.getName() );
