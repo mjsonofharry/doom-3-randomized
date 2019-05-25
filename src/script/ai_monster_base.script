@@ -2236,32 +2236,35 @@ void monster_base::monster_randomize() {
 		}
 	}
 
-	// select offspring name
-	string offspringNamePrefix = "rndAI_" + self.getName();
-	string offspringName = "";
-	float i;
-	for ( i = 0; ( offspringName == "" ) || ( sys.getEntity( offspringName ) != $null_entity ); i++ ) {
-		offspringName = offspringNamePrefix + i;
-		sys.wait( 0.01 );
-	}
-
-	// get targets
+	// copy targets
 	entity target = $null_entity;
 	string targetKey;
-	for ( i = 0; i < 20 ); i++ {
+	float i;
+	for ( i = 0; i < 20; i++ ) {
 		target = getTarget( i );
 		if ( target == $null_entity ) {
 			break;
 		}
 		targetKey = "target";
+		string targetIdx;
 		if ( i > 0 ) {
-			targetKey += i;
+			targetIdx = i;
+			targetKey = targetKey + targetIdx;
 		}
-		sys.setSpawnArg( targetKey, target );
+		sys.setSpawnArg( targetKey, target.getName() );
+	}
+
+	// copy other args
+	if ( getIntKey( "spawner" ) ) {
+		sys.setSpawnArg( "spawner", 1 );
 	}
 
 	// spawn offspring
-	sys.setSpawnArg( "name", offspringName );
+	removeBinds();
+	string name = getName();
+	string _name = "_" + name;
+	setName( _name );
+	sys.setSpawnArg( "name", name );
 	sys.setSpawnArg( "random_parent", self.getName() );
 	entity monster = sys.spawn( classname );
 	monster.setOrigin( getOrigin() );
