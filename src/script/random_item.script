@@ -117,7 +117,7 @@ void random_item::init() {
         classname = "weapon_shotgun";
     } else if ( rnd < 30 ) {
         classname = "weapon_soulcube";
-    } else if ( rnd < 31 ) {
+    } else {
         classname = "item_armor_security";
     }
 
