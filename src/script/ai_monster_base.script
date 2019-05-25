@@ -2203,7 +2203,7 @@ void monster_base::monster_randomize() {
 	} else if ( rnd < 17 ) {
 		// zsec
 		rnd = new_random( 4 );
-		if ( rnd < 4 ) {
+		if ( rnd < 1 ) {
 			classname = "monster_zsec_machinegun";
 		} else if ( rnd < 2 ) {
 			classname = "monster_zsec_shotgun";
