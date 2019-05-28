@@ -12,19 +12,23 @@ void random_item::init() {
     // spinlock until player arrives
     player_base p1 = $player1;
     entity ent = $null_entity;
-    vector pos = getOrigin() + '0 0 4';
-    vector org;
-	while ( ( ent != p1 ) && ( distanceTo( p1 ) > 300 ) ) {
-        org = p1.getOrigin() + '0 0 8';
-        sys.trace( pos, org, '-2 -2 0', '2 2 8', MASK_PLAYERSOLID, self );
+    vector pos2 = getOrigin() + '0 0 4';
+    vector target;
+	while ( distanceTo( p1 ) > 300 ) {
+        target = p1.getOrigin() + '0 0 8';
+        sys.trace( pos2, target, '-1 -1 0', '1 1 8', MASK_PLAYERSOLID, self );
         ent = sys.getTraceEntity();
+        if ( ent == p1 ) {
+            break;
+        }
 		waitFrame();
     }
 
     // select a spawn class
     
     string classname = "";
-	float rnd = hacky_random( 19, getOrigin() );
+	vector pos = getOrigin();
+	float rnd = hacky_random( 19, pos );
     if ( rnd < 1 ) {
         classname = "item_armor_shard";
     } else if ( rnd < 2 ) {
@@ -34,7 +38,18 @@ void random_item::init() {
     } else if ( rnd < 4 ) {
         classname = "item_aircannister";
     } else if ( rnd < 5 ) {
-        classname = "item_battery";
+        rnd = hacky_random( 5, pos );
+        if ( rnd < 1 ) {
+            classname = "item_key_blue";
+        } else if ( rnd < 2 ) {
+            classname = "item_key_red";
+        } else if ( rnd < 3 ) {
+            classname = "item_key_yellow";
+        } else if ( rnd < 4 ) {
+            classname = "item_keycard_generic";
+        } else {
+            classname = "item_keycard_aco";
+        }
     } else if ( rnd < 6 ) {
         classname = "item_backpack";
     } else if ( rnd < 7 ) {
