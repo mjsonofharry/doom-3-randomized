@@ -13,21 +13,23 @@ void random_item::init() {
     player_base p1 = $player1;
     entity ent = $null_entity;
     vector pos = getOrigin() + '0 0 4';
-    vector target;
-	while ( ( ent != p1 ) && ( distanceTo( p1 ) > 100 ) ) {
-        target = p1.getOrigin() + '0 0 8';
-        sys.trace( pos, target, '-2 -2 0', '2 2 8', MASK_PLAYERSOLID, self );
+    vector org;
+	while ( ( ent != p1 ) && ( distanceTo( p1 ) > 1000 ) ) {
+        org = p1.getOrigin() + '0 0 8';
+        sys.trace( pos, org, '-2 -2 0', '2 2 8', MASK_PLAYERSOLID, self );
         ent = sys.getTraceEntity();
 		waitFrame();
     }
     
     // random 1
-	vector dir = getOrigin() - p1.getOrigin();
-	float rel = sys.DotProduct( dir, sys.angToRight( p1.getViewAngles() ) );
-	if ( rel < 0 ) {
-		rel *= -1;
+	vector target = sys.vecNormalize( getOrigin() - p1.getOrigin() );
+	vector forward = sys.angToForward( p1.getViewAngles() );
+	vector perp = sys.CrossProduct( forward, target );
+	vector up = '0 0 1';
+	float ang = sys.DotProduct( perp, up );
+	if ( ang < 0 ) {
+		ang *= -1;
 	}
-	rel /= 360;
 
     // random 2
 	string strTime = sys.getTime();
@@ -50,10 +52,10 @@ void random_item::init() {
 	float sysrnd = sys.random( 1 );
 
     // random result
-	rel *= 0.3;
-	dec *= 0.6;
-	sysrnd *= 0.1;
-    float rnd = ( rel + dec + sysrnd ) * 31;
+	ang *= 0.4;
+	dec *= 0.4;
+	sysrnd *= 0.2;
+    float rnd = ( ang + dec + sysrnd ) * 31;
 
     // select a spawn class
     string classname = "";
