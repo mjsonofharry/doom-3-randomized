@@ -115,7 +115,6 @@ object monster_base : ai {
 	void		path_attack();
 
 	void		monster_randomize();
-	float		new_random( float max );
 };
 
 /***********************************************************************
@@ -692,6 +691,14 @@ void monster_base::state_Dead() {
 		// wait until we're resurrected
 		waitUntil( 0 );
 	}
+
+	// remove parent
+	string parentName = getKey( "random_parent" );
+	if ( parentName != "" ) {
+		entity parent = sys.getEntity( parentName );
+		parent.remove();
+	}
+
 	remove();
 }
 /*
@@ -2101,11 +2108,6 @@ void monster_base::monster_randomize() {
 
 	hide();
 	removeBinds();
-	// spin a random amount to wait for binds to be removed
-	float randomTime = RandomDelay( 1, 3 );
-	while ( sys.getTime() < randomTime ) {
-		waitFrame();
-	}
 
 	// spinlock until player arrives
 	while ( !AI_DAMAGE && !AI_ACTIVATED ) {
@@ -2117,7 +2119,8 @@ void monster_base::monster_randomize() {
 
 	// select a spawn class
 	string classname = "";
-	float rnd = new_random( 19 );
+	vector pos = getOrigin();
+	float rnd = hacky_random( 19, pos );
 	if ( rnd < 1 ) {
 		classname = "monster_demon_archvile";
 	} else if ( rnd < 2 ) {
@@ -2146,7 +2149,7 @@ void monster_base::monster_randomize() {
 		classname = "monster_flying_lostsoul";
 	} else if ( rnd < 14 ) {
 		// regular zombie
-		rnd = new_random( 16 );
+		rnd = hacky_random( 16, pos );
 		if ( rnd < 1 ) {
 			classname = "monster_zombie_jumpsuit";
 		} else if ( rnd < 2 ) {
@@ -2182,10 +2185,10 @@ void monster_base::monster_randomize() {
 		}
 	} else if ( rnd < 15 ) {
 		// special zombie
-		rnd = new_random( 3 );
+		rnd = hacky_random( 3, pos );
 		if ( rnd < 1 ) {
 			// fat zombie
-			rnd = new_random( 3 );
+			rnd = hacky_random( 3, pos );
 			if ( rnd < 1 ) {
 				classname = "monster_zombie_fat";
 			} else if ( rnd < 2 ) {
@@ -2200,7 +2203,7 @@ void monster_base::monster_randomize() {
 		}
 	} else if ( rnd < 16 ) {
 		// unique zombie
-		rnd = new_random( 3 );
+		rnd = hacky_random( 3, pos );
 		if ( rnd < 1 ) {
 			classname = "monster_zombie_morgue";
 		} else if ( rnd < 2 ) {
@@ -2210,7 +2213,7 @@ void monster_base::monster_randomize() {
 		}
 	} else if ( rnd < 17 ) {
 		// zsec
-		rnd = new_random( 4 );
+		rnd = hacky_random( 4, pos );
 		if ( rnd < 1 ) {
 			classname = "monster_zsec_machinegun";
 		} else if ( rnd < 2 ) {
@@ -2222,7 +2225,7 @@ void monster_base::monster_randomize() {
 		}
 	} else if ( rnd < 18 ) {
 		// commando
-		rnd = new_random( 2 );
+		rnd = hacky_random( 2, pos );
 		if ( rnd < 1 ) {
 			classname = "monster_zombie_commando";
 		} else {
@@ -2230,7 +2233,7 @@ void monster_base::monster_randomize() {
 		}
 	} else {
 		// boss
-		rnd = new_random ( 5 );
+		rnd = hacky_random ( 5, pos );
 		if ( rnd < 1 ) {
 			classname = "monster_boss_cyberdemon";
 		} else if ( rnd < 2 ) {
@@ -2277,44 +2280,7 @@ void monster_base::monster_randomize() {
 	sys.setSpawnArg( "angle", getAngles() );
 	entity monster = sys.spawn( classname );
 	sys.trigger( monster );
-	remove();
-}
-
-float monster_base::new_random( float max ) {
-	player_base player = $player1;
-	vector target = sys.vecNormalize( getOrigin() - player.getOrigin() );
-	vector forward = sys.angToForward( player.getViewAngles() );
-	vector perp = sys.CrossProduct( forward, target );
-	vector up = '0 0 1';
-	float ang = sys.DotProduct( perp, up );
-	if ( ang < 0 ) {
-		ang *= -1;
+	while ( 1 ) {
+		sys.waitFrame();
 	}
-
-	string strTime = sys.getTime();
-	float len = sys.strLength( strTime );
-	boolean isDecimal = false;
-	string buf = "0.";
-	string ch;
-	float i;
-	for ( i = 0; i < len; i++ ) {
-		ch = sys.strMid( strTime, i, 1);
-		if ( ch == "."  ) {
-			isDecimal = true;
-		} else if ( isDecimal ) {
-			buf = buf + ch;
-		}
-	}
-	float dec = sys.strToFloat( buf );
-
-	float rnd = sys.random( 1 );
-
-	ang *= 0.4;
-	dec *= 0.4;
-	rnd *= 0.2;
-	float result = ( ang + dec + rnd ) * max;
-
-	sys.println( "RNG: " + result + "/" + max );
-
-	return result;
 }

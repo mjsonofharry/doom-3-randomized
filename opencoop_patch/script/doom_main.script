@@ -10,6 +10,11 @@ This is the main script that is loaded before any level scripts load.
 #include "script/doom_defs.script"
 #include "script/doom_events.script"
 #include "script/doom_util.script"
+
+// Doom 3 Randomized
+#include "script/hacky_random.script"
+#include "script/random_item.script"
+
 // OpenCoop
 #include "script/opencoop.script"
 #include "script/weapon_base.script"
@@ -99,9 +104,6 @@ This is the main script that is loaded before any level scripts load.
 
 // test scripts
 #include "script/ai_follower.script"
-
-// Doom 3 Randomized
-#include "script/random_item.script"
 
 void doom_main() {
 	//

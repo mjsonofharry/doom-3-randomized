@@ -14,51 +14,17 @@ void random_item::init() {
     entity ent = $null_entity;
     vector pos = getOrigin() + '0 0 4';
     vector org;
-	while ( ( ent != p1 ) && ( distanceTo( p1 ) > 1000 ) ) {
+	while ( ( ent != p1 ) && ( distanceTo( p1 ) > 300 ) ) {
         org = p1.getOrigin() + '0 0 8';
         sys.trace( pos, org, '-2 -2 0', '2 2 8', MASK_PLAYERSOLID, self );
         ent = sys.getTraceEntity();
 		waitFrame();
     }
-    
-    // random 1
-	vector target = sys.vecNormalize( getOrigin() - p1.getOrigin() );
-	vector forward = sys.angToForward( p1.getViewAngles() );
-	vector perp = sys.CrossProduct( forward, target );
-	vector up = '0 0 1';
-	float ang = sys.DotProduct( perp, up );
-	if ( ang < 0 ) {
-		ang *= -1;
-	}
-
-    // random 2
-	string strTime = sys.getTime();
-	float len = sys.strLength( strTime );
-	boolean isDecimal = false;
-	string buf = "0.";
-	string ch;
-	float i;
-	for ( i = 0; i < len; i++ ) {
-		ch = sys.strMid( strTime, i, 1);
-		if ( ch == "."  ) {
-			isDecimal = true;
-		} else if ( isDecimal ) {
-			buf = buf + ch;
-		}
-	}
-	float dec = sys.strToFloat( buf );
-
-    // random 3
-	float sysrnd = sys.random( 1 );
-
-    // random result
-	ang *= 0.4;
-	dec *= 0.4;
-	sysrnd *= 0.2;
-    float rnd = ( ang + dec + sysrnd ) * 31;
 
     // select a spawn class
+    
     string classname = "";
+	float rnd = hacky_random( 19, getOrigin() );
     if ( rnd < 1 ) {
         classname = "item_armor_shard";
     } else if ( rnd < 2 ) {
@@ -125,7 +91,8 @@ void random_item::init() {
 
     // select offspring name
 	string offspringNamePrefix = "rndItem" + self.getName();
-	string offspringName = "";
+    string offspringName = "";
+    float i;
 	for ( i = 0; ( offspringName == "" ) || ( sys.getEntity( offspringName ) != $null_entity ); i++ ) {
 		offspringName = offspringNamePrefix + i;
 		sys.wait( 0.01 );

@@ -13,6 +13,10 @@ This is the main script that is loaded before any level scripts load.
 #include "script/weapon_base.script"
 #include "script/ai_base.script"
 
+// Doom 3 Randomized
+#include "script/hacky_random.script"
+#include "script/random_item.script"
+
 // weapons
 #include "script/weapon_fists.script"
 #include "script/weapon_pistol.script"
@@ -95,9 +99,6 @@ This is the main script that is loaded before any level scripts load.
 
 // test scripts
 #include "script/ai_follower.script"
-
-// Doom 3 Randomized
-#include "script/random_item.script"
 
 void doom_main() {
 	sys.print( "Entering doom_main()\n");
