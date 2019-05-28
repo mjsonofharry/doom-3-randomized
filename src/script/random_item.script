@@ -131,9 +131,9 @@ void random_item::init() {
 
     // spawn offspring
     sys.setSpawnArg( "name", offspringName );
-    sys.setSpawnArg( "random_parent", self.getName() );
+    sys.setSpawnArg( "random_parent", getName() );
+    sys.setSpawnArg( "origin", getOrigin() );
+	sys.setSpawnArg( "angle", getAngles() );
     entity item = sys.spawn( classname );
-    item.setOrigin( getOrigin() );
-    item.setAngles( getAngles() );
     remove();
 }

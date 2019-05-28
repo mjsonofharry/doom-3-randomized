@@ -1838,7 +1838,7 @@ monster_base::combat_ainode
 =====================
 */
 void monster_base::combat_ainode( entity node ) {
-	monster_randomize();
+	return; // these functions will crash for almost all monsters
 	if ( node.getKey( "classname" ) == "ai_attackcone_turret" ) {
 		combat_turret_node( node );
 	} else {
@@ -2101,6 +2101,7 @@ void monster_base::monster_randomize() {
 
 	hide();
 	removeBinds();
+	// spin a random amount to wait for binds to be removed
 	float randomTime = RandomDelay( 1, 3 );
 	while ( sys.getTime() < randomTime ) {
 		waitFrame();
@@ -2272,9 +2273,9 @@ void monster_base::monster_randomize() {
 	setName( tmpName );
 	sys.setSpawnArg( "name", name );
 	sys.setSpawnArg( "random_parent", tmpName );
+	sys.setSpawnArg( "origin", getOrigin() );
+	sys.setSpawnArg( "angle", getAngles() );
 	entity monster = sys.spawn( classname );
-	monster.setOrigin( getOrigin() );
-	monster.setAngles( getAngles() );
 	sys.trigger( monster );
 	remove();
 }
@@ -2309,6 +2310,9 @@ float monster_base::new_random( float max ) {
 	rel *= 0.3;
 	dec *= 0.6;
 	rnd *= 0.1;
+	float result = ( rel + dec + rnd ) * max;
 
-	return ( rel + dec + rnd ) * max;
+	sys.println( "RNG: " + result + "/" + max );
+
+	return result;
 }
