@@ -2280,6 +2280,8 @@ void monster_base::monster_randomize() {
 	sys.setSpawnArg( "angle", getAngles() );
 	entity monster = sys.spawn( classname );
 	sys.trigger( monster );
+
+	// wait until removed by own offspring
 	while ( 1 ) {
 		sys.waitFrame();
 	}

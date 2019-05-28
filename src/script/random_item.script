@@ -11,16 +11,7 @@ void random_item::init() {
 
     // spinlock until player arrives
     player_base p1 = $player1;
-    entity ent = $null_entity;
-    vector pos2 = getOrigin() + '0 0 4';
-    vector target;
 	while ( distanceTo( p1 ) > 300 ) {
-        target = p1.getOrigin() + '0 0 8';
-        sys.trace( pos2, target, '-1 -1 0', '1 1 8', MASK_PLAYERSOLID, self );
-        ent = sys.getTraceEntity();
-        if ( ent == p1 ) {
-            break;
-        }
 		waitFrame();
     }
 
