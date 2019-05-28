@@ -115,6 +115,7 @@ object monster_base : ai {
 	void		path_attack();
 
 	void		monster_randomize();
+	void		state_WaitForever();
 };
 
 /***********************************************************************
@@ -2282,6 +2283,10 @@ void monster_base::monster_randomize() {
 	sys.trigger( monster );
 
 	// wait until removed by own offspring
+	setState( "state_WaitForever" );
+}
+
+void monster_base::state_WaitForever() {
 	while ( 1 ) {
 		sys.waitFrame();
 	}
